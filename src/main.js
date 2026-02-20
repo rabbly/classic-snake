@@ -24,6 +24,7 @@ const swipeThreshold = 24;
 let state = createInitialState(config);
 let intervalId = null;
 let touchStart = null;
+let activeTouchId = null;
 
 function statusText(mode) {
   if (mode === "idle") return "Press any direction to start";
@@ -132,6 +133,16 @@ function handleDirectionInput(directionName) {
   }
 }
 
+function findTouchById(touchList, touchId) {
+  if (touchId == null) return null;
+  for (const touch of touchList) {
+    if (touch.identifier === touchId) {
+      return touch;
+    }
+  }
+  return null;
+}
+
 function keyToDirection(key) {
   const normalized = key.toLowerCase();
   if (normalized === "arrowup" || normalized === "w") return "up";
@@ -172,8 +183,10 @@ for (const button of touchButtons) {
 board.addEventListener(
   "touchstart",
   (event) => {
+    if (activeTouchId != null) return;
     const touch = event.changedTouches[0];
     if (!touch) return;
+    activeTouchId = touch.identifier;
     touchStart = { x: touch.clientX, y: touch.clientY };
   },
   { passive: true }
@@ -182,22 +195,25 @@ board.addEventListener(
 board.addEventListener(
   "touchmove",
   (event) => {
-    if (!touchStart) return;
+    if (!touchStart || activeTouchId == null) return;
+    const touch = findTouchById(event.touches, activeTouchId);
+    if (!touch) return;
     event.preventDefault();
   },
   { passive: false }
 );
 
-board.addEventListener(
+window.addEventListener(
   "touchend",
   (event) => {
-    if (!touchStart) return;
-    const touch = event.changedTouches[0];
+    if (!touchStart || activeTouchId == null) return;
+    const touch = findTouchById(event.changedTouches, activeTouchId);
     if (!touch) return;
 
     const dx = touch.clientX - touchStart.x;
     const dy = touch.clientY - touchStart.y;
     touchStart = null;
+    activeTouchId = null;
 
     if (Math.abs(dx) < swipeThreshold && Math.abs(dy) < swipeThreshold) {
       return;
@@ -213,10 +229,11 @@ board.addEventListener(
   { passive: true }
 );
 
-board.addEventListener(
+window.addEventListener(
   "touchcancel",
   () => {
     touchStart = null;
+    activeTouchId = null;
   },
   { passive: true }
 );
