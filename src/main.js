@@ -17,9 +17,11 @@ const statusEl = document.querySelector("#status");
 const restartBtn = document.querySelector("#restart-btn");
 const pauseBtn = document.querySelector("#pause-btn");
 const touchButtons = document.querySelectorAll("[data-dir]");
+const swipeThreshold = 24;
 
 let state = createInitialState(config);
 let intervalId = null;
+let touchStart = null;
 
 function statusText(mode) {
   if (mode === "idle") return "Press any direction to start";
@@ -118,6 +120,14 @@ function renderGameToText() {
   });
 }
 
+function handleDirectionInput(directionName) {
+  const shouldStart = state.mode === "idle";
+  applyDirection(directionName);
+  if (shouldStart && state.mode === "running") {
+    startLoop();
+  }
+}
+
 function keyToDirection(key) {
   const normalized = key.toLowerCase();
   if (normalized === "arrowup" || normalized === "w") return "up";
@@ -143,11 +153,7 @@ document.addEventListener("keydown", (event) => {
   if (!directionName) return;
 
   event.preventDefault();
-  const shouldStart = state.mode === "idle";
-  applyDirection(directionName);
-  if (shouldStart && state.mode === "running") {
-    startLoop();
-  }
+  handleDirectionInput(directionName);
 });
 
 restartBtn.addEventListener("click", restart);
@@ -155,14 +161,61 @@ pauseBtn.addEventListener("click", togglePause);
 
 for (const button of touchButtons) {
   button.addEventListener("click", () => {
-    const directionName = button.dataset.dir;
-    const shouldStart = state.mode === "idle";
-    applyDirection(directionName);
-    if (shouldStart && state.mode === "running") {
-      startLoop();
-    }
+    handleDirectionInput(button.dataset.dir);
   });
 }
+
+board.addEventListener(
+  "touchstart",
+  (event) => {
+    const touch = event.changedTouches[0];
+    if (!touch) return;
+    touchStart = { x: touch.clientX, y: touch.clientY };
+  },
+  { passive: true }
+);
+
+board.addEventListener(
+  "touchmove",
+  (event) => {
+    if (!touchStart) return;
+    event.preventDefault();
+  },
+  { passive: false }
+);
+
+board.addEventListener(
+  "touchend",
+  (event) => {
+    if (!touchStart) return;
+    const touch = event.changedTouches[0];
+    if (!touch) return;
+
+    const dx = touch.clientX - touchStart.x;
+    const dy = touch.clientY - touchStart.y;
+    touchStart = null;
+
+    if (Math.abs(dx) < swipeThreshold && Math.abs(dy) < swipeThreshold) {
+      return;
+    }
+
+    if (Math.abs(dx) > Math.abs(dy)) {
+      handleDirectionInput(dx > 0 ? "right" : "left");
+      return;
+    }
+
+    handleDirectionInput(dy > 0 ? "down" : "up");
+  },
+  { passive: true }
+);
+
+board.addEventListener(
+  "touchcancel",
+  () => {
+    touchStart = null;
+  },
+  { passive: true }
+);
 
 window.render_game_to_text = renderGameToText;
 window.advanceTime = (ms) => {

@@ -19,11 +19,12 @@ Then open:
 - Arrow keys or `W/A/S/D`: move
 - `Space`: pause/resume
 - `R`: restart
-- On-screen arrow buttons are available for touch/mobile use
+- Swipe on the board (mobile): move
+- On-screen arrow buttons are also available for touch/mobile use
 
 ## Manual Verification Checklist
 
-- Movement works in all four directions with keyboard and on-screen controls.
+- Movement works in all four directions with keyboard, swipe, and on-screen controls.
 - Snake grows by one segment and score increments when food is eaten.
 - Game ends on wall collision.
 - Game ends on self collision.

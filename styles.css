@@ -60,6 +60,7 @@ body {
   display: grid;
   background: var(--line);
   gap: 1px;
+  touch-action: none;
 }
 
 .cell {
