@@ -1,0 +1,112 @@
+:root {
+  --bg: #f4f4f0;
+  --panel: #ffffff;
+  --ink: #1f1f1f;
+  --muted: #5f5f5f;
+  --snake: #257b3d;
+  --food: #bc3021;
+  --cell: #ebebe7;
+  --line: #d7d7d0;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+}
+
+.app {
+  max-width: 520px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+.hud {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  align-items: baseline;
+}
+
+.hud h1 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.hud p {
+  margin: 0;
+}
+
+#status {
+  color: var(--muted);
+}
+
+.board-wrap {
+  margin-top: 12px;
+  padding: 8px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+}
+
+.board {
+  width: 100%;
+  max-width: 480px;
+  aspect-ratio: 1 / 1;
+  display: grid;
+  background: var(--line);
+  gap: 1px;
+}
+
+.cell {
+  background: var(--cell);
+}
+
+.cell.snake {
+  background: var(--snake);
+}
+
+.cell.food {
+  background: var(--food);
+}
+
+.controls {
+  margin-top: 12px;
+  display: flex;
+  gap: 8px;
+}
+
+button {
+  font: inherit;
+  padding: 8px 12px;
+  border: 1px solid var(--line);
+  background: #fff;
+  color: var(--ink);
+  border-radius: 4px;
+}
+
+.touch-controls {
+  margin-top: 12px;
+  display: grid;
+  justify-content: center;
+  gap: 8px;
+}
+
+.touch-controls > button {
+  margin: 0 auto;
+}
+
+.touch-controls div {
+  display: flex;
+  gap: 8px;
+}
+
+@media (min-width: 900px) {
+  .touch-controls {
+    display: none;
+  }
+}
