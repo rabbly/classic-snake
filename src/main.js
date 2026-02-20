@@ -10,7 +10,7 @@ const config = {
   rows: 16,
   tickMs: 140,
 };
-const APP_VERSION = "1.2.0";
+const APP_VERSION = "1.2.1";
 
 const board = document.querySelector("#board");
 const scoreEl = document.querySelector("#score");
