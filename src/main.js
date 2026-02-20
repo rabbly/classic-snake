@@ -10,9 +10,11 @@ const config = {
   rows: 16,
   tickMs: 140,
 };
+const APP_VERSION = "1.2.0";
 
 const board = document.querySelector("#board");
 const scoreEl = document.querySelector("#score");
+const versionEl = document.querySelector("#version");
 const statusEl = document.querySelector("#status");
 const restartBtn = document.querySelector("#restart-btn");
 const pauseBtn = document.querySelector("#pause-btn");
@@ -103,6 +105,7 @@ function renderBoard() {
 
 function render() {
   scoreEl.textContent = `${state.score}`;
+  versionEl.textContent = APP_VERSION;
   statusEl.textContent = statusText(state.mode);
   pauseBtn.textContent = state.mode === "paused" ? "Resume" : "Pause";
   renderBoard();
@@ -116,6 +119,7 @@ function renderGameToText() {
     snake: state.snake,
     food: state.food,
     score: state.score,
+    version: APP_VERSION,
     board: { cols: config.cols, rows: config.rows },
   });
 }
